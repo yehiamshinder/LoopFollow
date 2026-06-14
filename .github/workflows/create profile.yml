@@ -15,9 +15,13 @@ jobs:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           GH_PAT: ${{ secrets.GH_PAT }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          FASTLANE_ISSUER_ID: ${{ secrets.FASTLANE_ISSUER_ID }}
+          FASTLANE_KEY_ID: ${{ secrets.FASTLANE_KEY_ID }}
+          FASTLANE_KEY: ${{ secrets.FASTLANE_KEY }}
         run: |
           bundle exec fastlane match appstore \
             --app_identifier "com.8QQDWN2M43.LoopFollow.LoopFollowLAExtension" \
-            --git_url "https://github.com/yehiamshinder/Match-Secrets.git" \
+            --git_url "https://github.com/$GITHUB_REPOSITORY_OWNER/Match-Secrets.git" \
             --git_basic_authorization $(echo -n "$GITHUB_REPOSITORY_OWNER:$GH_PAT" | base64) \
+            --api_key_path <(echo "{\"key_id\": \"$FASTLANE_KEY_ID\", \"issuer_id\": \"$FASTLANE_ISSUER_ID\", \"key\": \"$FASTLANE_KEY\", \"in_house\": false}") \
             --readonly false
