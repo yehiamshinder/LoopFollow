@@ -1,0 +1,23 @@
+name: Create Missing Profile
+on: workflow_dispatch
+
+jobs:
+  create-profile:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+      - name: Create LoopFollowLAExtension profile
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          bundle exec fastlane match appstore \
+            --app_identifier "com.8QQDWN2M43.LoopFollow.LoopFollowLAExtension" \
+            --git_url "https://github.com/$GITHUB_REPOSITORY_OWNER/Match-Secrets.git" \
+            --git_basic_authorization $(echo -n "$GITHUB_REPOSITORY_OWNER:$GH_PAT" | base64) \
+            --readonly false
